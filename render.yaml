@@ -1,0 +1,38 @@
+services:
+  # ── Backend: FastAPI Web Service ──────────────────────────────────────────
+  - type: web
+    name: qontint-backend
+    env: docker
+    repo: . # Uses the Dockerfile in the backend folder
+    rootDir: backend
+    plan: starter # Starter plan is recommended for AI models/spacy
+    region: ohio
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        value: sqlite+aiosqlite:///./data/qontint.db
+      - key: GOOGLE_API_KEY
+        sync: false # Set this manually in the Render dashboard for security
+    disk:
+      name: qontint-data
+      mountPath: /app/data
+      sizeGB: 1
+
+  # ── Frontend: React Static Site ───────────────────────────────────────────
+  - type: web
+    name: qontint-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_BASE
+        fromService:
+          name: qontint-backend
+          type: web
+          property: host
+    routingRules:
+      - route: /*
+        destination: /index.html

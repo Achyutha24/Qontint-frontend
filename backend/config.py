@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     )
 
     # ── SQLite ───────────────────────────────────────────────────────────
-    DATABASE_URL: str = "sqlite+aiosqlite:///./qontint.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./data/qontint.db"
 
     # ── Mocks (Originals Removed) ─────────────────────────────────────────
     # Removed Neo4j, Redis, Ollama, Celery configs for simple mode
